@@ -35,6 +35,10 @@ jobs:
         working-directory: music-assistant-server
         run: scripts/setup.sh
 
+      - name: Install Twitch provider requirement
+        working-directory: music-assistant-server
+        run: uv pip install --python .venv/bin/python streamlink==8.6.2
+
       - name: Run focused tests
         working-directory: music-assistant-server
         run: .venv/bin/pytest tests/providers/twitch
