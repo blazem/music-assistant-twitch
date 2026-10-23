@@ -67,7 +67,7 @@ class TwitchProvider(MusicProvider):
                     item_id=BROWSE_FOLLOWED_LIVE,
                     provider=self.domain,
                     path=f"{path}{BROWSE_FOLLOWED_LIVE}",
-                    name="",
+                    name="Live followed channels",
                     translation_key="twitch_followed_live",
                 )
             ]
