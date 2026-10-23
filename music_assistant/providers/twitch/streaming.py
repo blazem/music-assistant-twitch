@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from streamlink.exceptions import NoPluginError, NoStreamsError, PluginError
-from streamlink.session import Streamlink
+from streamlink.session.session import Streamlink
 
 
 def resolve_stream_url(channel_login: str) -> str:
