@@ -36,6 +36,7 @@ async def test_browse_root_has_followed_live_folder(provider: TwitchProvider) ->
     assert len(result) == 1
     assert result[0].item_id == "followed-live"
     assert result[0].path == "twitch://followed-live"
+    assert result[0].name == "Live followed channels"
 
 
 async def test_browse_followed_live_returns_radios(provider: TwitchProvider) -> None:
