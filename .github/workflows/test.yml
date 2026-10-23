@@ -12,16 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Twitch provider
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: twitch-provider
 
       - name: Check out Music Assistant 2.10.7
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: music-assistant/server
           ref: 2.10.7
           path: music-assistant-server
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
 
       - name: Overlay provider and tests
         run: |
