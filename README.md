@@ -6,13 +6,17 @@ signed-in user, searches live channels, and resolves playback through Streamlink
 
 ## Status
 
-This repository is a proof of concept targeting Music Assistant **2.10.7** and the current
-development provider API. The provider code and mocked tests are implemented. A release must not
-be described as stable until all three live gates pass:
+This repository is a live-validated proof of concept targeting Music Assistant **2.10.7** and the
+current development provider API. On 24 October 2026, the following gates passed on an isolated
+Music Assistant server:
 
-1. Twitch device authorization using a real public Client ID.
-2. Followed-channel browse against Twitch Helix.
-3. Audio playback through a separate Music Assistant test server and a real player.
+1. Twitch device authorization using a real public Client ID and only `user:read:follows`.
+2. Followed-channel browse and live-channel search against Twitch Helix.
+3. Streamlink resolution of Twitch's `audio_only` rendition and playback through Music
+   Assistant's web player.
+
+The focused test suite, Ruff, formatting, and mypy checks also pass in GitHub Actions. This remains
+experimental because Music Assistant does not yet have a supported external-provider loader.
 
 Do not install this into a production Home Assistant Music Assistant App. Music Assistant does not
 currently load providers from an external custom-provider directory, so the supported development
@@ -39,7 +43,7 @@ application and complete its anti-bot check.
 1. Open the [Twitch Developer Console](https://dev.twitch.tv/console/apps).
 2. Choose **Register Your Application**.
 3. Give it a unique name, for example `Music Assistant Twitch - <your name>`.
-4. Add `http://localhost:3000` as the OAuth redirect URL if the form requires one. The provider's
+4. Add `https://localhost:3000` as the OAuth redirect URL if the form requires one. The provider's
    device-code flow does not redirect to it, but Twitch's registration form requires a URL.
 5. Choose the closest available application category.
 6. Create the application and open **Manage**.
@@ -112,3 +116,4 @@ scripts/setup.sh
 ## License
 
 Apache-2.0. See `LICENSE`.
+
