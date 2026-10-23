@@ -5,8 +5,8 @@ services:
       args:
         MASS_VERSION: "2.10.7"
     container_name: music-assistant-twitch-dev
-    network_mode: host
-    command: ["--port", "8096"]
+    ports:
+      - "8096:8095"
     volumes:
       - ./dev-data:/data
     restart: unless-stopped
