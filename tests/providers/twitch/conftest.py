@@ -14,6 +14,7 @@ from music_assistant.providers.twitch.provider import TwitchProvider
 def provider() -> TwitchProvider:
     """Create a Twitch provider with mocked Music Assistant dependencies."""
     mass = Mock()
+    mass.get_provider_icon_data.return_value = "data:image/svg+xml;base64,dHdpdGNo"
     manifest = Mock()
     manifest.domain = "twitch"
     config = Mock()
@@ -31,3 +32,4 @@ def provider() -> TwitchProvider:
     provider.get_setup_value = Mock(side_effect=lambda key, default=None: values.get(key, default))
     provider.api = Mock()
     return provider
+

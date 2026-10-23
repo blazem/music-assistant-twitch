@@ -37,6 +37,8 @@ async def test_browse_root_has_followed_live_folder(provider: TwitchProvider) ->
     assert result[0].item_id == "followed-live"
     assert result[0].path == "twitch://followed-live"
     assert result[0].name == "Live followed channels"
+    assert result[0].image is not None
+    assert result[0].image.path == "data:image/svg+xml;base64,dHdpdGNo"
 
 
 async def test_browse_followed_live_returns_radios(provider: TwitchProvider) -> None:
@@ -85,3 +87,4 @@ async def test_stream_details_reject_offline_channel(provider: TwitchProvider) -
 
     with pytest.raises(MediaNotFoundError, match="offline"):
         await provider.get_stream_details("offline", MediaType.RADIO)
+

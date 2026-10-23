@@ -62,6 +62,7 @@ class TwitchProvider(MusicProvider):
         """Browse live followed Twitch channels."""
         subpath = "" if "://" not in path else path.split("://", 1)[1].strip("/")
         if not subpath:
+            provider_icon = self.mass.get_provider_icon_data(self.domain)
             return [
                 BrowseFolder(
                     item_id=BROWSE_FOLLOWED_LIVE,
@@ -69,6 +70,16 @@ class TwitchProvider(MusicProvider):
                     path=f"{path}{BROWSE_FOLLOWED_LIVE}",
                     name="Live followed channels",
                     translation_key="twitch_followed_live",
+                    image=(
+                        MediaItemImage(
+                            type=ImageType.THUMB,
+                            path=provider_icon,
+                            provider=self.domain,
+                            remotely_accessible=True,
+                        )
+                        if isinstance(provider_icon, str)
+                        else None
+                    ),
                 )
             ]
         if subpath != BROWSE_FOLLOWED_LIVE:
@@ -189,3 +200,4 @@ class TwitchProvider(MusicProvider):
     def account_name(self) -> str:
         """Return the Twitch login connected to this instance."""
         return str(self.get_setup_value(CONF_USER_LOGIN) or "Twitch")
+
