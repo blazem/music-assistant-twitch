@@ -1,0 +1,31 @@
+{
+  "config_entries": {
+    "client_id": {
+      "label": "Twitch application Client ID",
+      "description": "A public Client ID from your own Twitch Developer application. Do not paste a Client Secret."
+    }
+  },
+  "setup_flow": {
+    "client": {
+      "title": "Connect your Twitch account",
+      "description": "Create a Twitch Developer application, copy its public Client ID, and paste it below. This provider uses Twitch's device-code flow and never asks for a Client Secret."
+    },
+    "authorize": {
+      "title": "Authorize Twitch",
+      "description": "Open Twitch with the button below and approve access to your followed channels. If Twitch asks for a code, enter `{0}`. This screen continues automatically when authorization is complete."
+    }
+  },
+  "media": {
+    "folder": {
+      "twitch_followed_live": {
+        "name": "Live followed channels"
+      }
+    }
+  },
+  "errors": {
+    "auth_failed": "Twitch authorization failed. Confirm that this is a valid Client ID for a Twitch application that supports the device-code flow, then try again."
+  },
+  "manifest": {
+    "description": "Browse and play live Twitch channels followed by your account."
+  }
+}

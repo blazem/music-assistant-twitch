@@ -1,0 +1,12 @@
+{
+  "type": "music",
+  "domain": "twitch",
+  "stage": "experimental",
+  "name": "Twitch",
+  "description": "Browse and play live Twitch channels followed by your account.",
+  "codeowners": ["@blazem"],
+  "requirements": ["streamlink==8.6.2"],
+  "documentation": "https://github.com/blazem/music-assistant-twitch",
+  "multi_instance": true,
+  "icon": "twitch"
+}

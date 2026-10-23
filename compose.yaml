@@ -1,0 +1,12 @@
+services:
+  music-assistant-twitch-dev:
+    build:
+      context: .
+      args:
+        MASS_VERSION: "2.10.7"
+    container_name: music-assistant-twitch-dev
+    network_mode: host
+    command: ["--port", "8096"]
+    volumes:
+      - ./dev-data:/data
+    restart: unless-stopped

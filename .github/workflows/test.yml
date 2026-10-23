@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  provider-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Twitch provider
+        uses: actions/checkout@v4
+        with:
+          path: twitch-provider
+
+      - name: Check out Music Assistant 2.10.7
+        uses: actions/checkout@v4
+        with:
+          repository: music-assistant/server
+          ref: 2.10.7
+          path: music-assistant-server
+
+      - name: Overlay provider and tests
+        run: |
+          cp -a twitch-provider/music_assistant/providers/twitch music-assistant-server/music_assistant/providers/
+          cp -a twitch-provider/tests/providers/twitch music-assistant-server/tests/providers/
+
+      - name: Set up Music Assistant development environment
+        working-directory: music-assistant-server
+        run: scripts/setup.sh
+
+      - name: Run focused tests
+        working-directory: music-assistant-server
+        run: .venv/bin/pytest tests/providers/twitch
+
+      - name: Run provider lint and type checks
+        working-directory: music-assistant-server
+        run: |
+          .venv/bin/ruff check music_assistant/providers/twitch tests/providers/twitch
+          .venv/bin/ruff format --check music_assistant/providers/twitch tests/providers/twitch
+          .venv/bin/mypy music_assistant/providers/twitch
