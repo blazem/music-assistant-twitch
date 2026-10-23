@@ -36,7 +36,7 @@ DEVICE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:device_code"
 async def run_setup(session: SetupSession) -> None:
     """Collect a public Client ID, authorize Twitch, and create the provider."""
     setup_data = dict(session.context.setup_data)
-    errors: dict[str, str | SetupFlowError] | None = None
+    errors: dict[str, str] | None = None
     while True:
         submitted = await session.form(
             [replace(CLIENT_ID_ENTRY, value=str(setup_data.get(CONF_CLIENT_ID) or ""))],
@@ -72,8 +72,10 @@ async def run_setup(session: SetupSession) -> None:
             )
             await session.finish(setup_data)
             return
-        except (KeyError, ValueError, SetupFlowError) as err:
-            errors = {"base": err if isinstance(err, SetupFlowError) else "auth_failed"}
+        except SetupFlowError as err:
+            errors = {"base": err.translation_key or "auth_failed"}
+        except KeyError, ValueError:
+            errors = {"base": "auth_failed"}
 
 
 async def _start_device_flow(session: SetupSession, client_id: str) -> dict[str, Any]:

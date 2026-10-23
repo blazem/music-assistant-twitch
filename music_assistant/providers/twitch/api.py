@@ -129,7 +129,7 @@ class TwitchApiClient:
 
     async def _access_token(self) -> str:
         """Return a usable access token, refreshing before expiry."""
-        expires_at = int(self.provider.get_setup_value(CONF_TOKEN_EXPIRES_AT, 0) or 0)
+        expires_at = self._token_expires_at()
         token = str(self.provider.get_setup_value(CONF_ACCESS_TOKEN) or "")
         if token and expires_at > int(time.time()) + 60:
             return token
@@ -138,7 +138,7 @@ class TwitchApiClient:
     async def _refresh_access_token(self, *, force: bool = False) -> str:
         """Refresh a public-client device token and persist the rotated credentials."""
         async with self._refresh_lock:
-            expires_at = int(self.provider.get_setup_value(CONF_TOKEN_EXPIRES_AT, 0) or 0)
+            expires_at = self._token_expires_at()
             token = str(self.provider.get_setup_value(CONF_ACCESS_TOKEN) or "")
             if not force and token and expires_at > int(time.time()) + 60:
                 return token
@@ -171,6 +171,11 @@ class TwitchApiClient:
                 int(time.time()) + int(payload.get("expires_in") or 0),
             )
             return new_token
+
+    def _token_expires_at(self) -> int:
+        """Return the stored token expiry, ignoring an invalid configuration value."""
+        value = self.provider.get_setup_value(CONF_TOKEN_EXPIRES_AT, 0)
+        return int(value) if isinstance(value, (float, int, str)) else 0
 
     @staticmethod
     async def _validated_payload(response: ClientResponse) -> dict[str, Any]:
