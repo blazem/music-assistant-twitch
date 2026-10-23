@@ -52,8 +52,8 @@ page asking for only the `user:read:follows` permission.
 
 ## Isolated development server
 
-The compose project binds Music Assistant to host port `8096` and stores its data in
-`./dev-data`, separate from a normal server on `8095`.
+The compose project maps host port `8096` to Music Assistant's internal port `8095`
+and stores its data in `./dev-data`, separate from a normal server on `8095`.
 
 ```bash
 docker compose build
@@ -61,9 +61,9 @@ docker compose up -d
 ```
 
 Open `http://<dev-host>:8096`, add the Twitch provider, and complete the three live gates above.
-The container uses host networking because Music Assistant player discovery relies on multicast.
-With host networking there is no container port mapping; `compose.yaml` starts the isolated server
-with `--port 8096` as supplied.
+This proof-of-concept stack uses Docker bridge networking so it cannot collide with a Music
+Assistant server already listening on host port `8095`. Multicast player discovery is not a goal
+of this isolated provider test; use a dedicated host-network deployment for that later gate.
 
 Stop and remove only this dev stack with:
 
