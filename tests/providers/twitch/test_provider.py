@@ -87,4 +87,3 @@ async def test_stream_details_reject_offline_channel(provider: TwitchProvider) -
 
     with pytest.raises(MediaNotFoundError, match="offline"):
         await provider.get_stream_details("offline", MediaType.RADIO)
-

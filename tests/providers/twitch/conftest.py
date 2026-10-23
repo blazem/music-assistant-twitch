@@ -32,4 +32,3 @@ def provider() -> TwitchProvider:
     provider.get_setup_value = Mock(side_effect=lambda key, default=None: values.get(key, default))
     provider.api = Mock()
     return provider
-

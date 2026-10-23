@@ -200,4 +200,3 @@ class TwitchProvider(MusicProvider):
     def account_name(self) -> str:
         """Return the Twitch login connected to this instance."""
         return str(self.get_setup_value(CONF_USER_LOGIN) or "Twitch")
-
