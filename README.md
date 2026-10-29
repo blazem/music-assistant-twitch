@@ -27,6 +27,8 @@ path is an isolated container image that layers this provider over the official 
 - Least-privilege Twitch OAuth (`user:read:follows` only).
 - No Client Secret: device authorization uses a public Twitch Client ID.
 - Live followed channels under **Browse → Twitch → Live followed channels**.
+- Live followed channels in the **Radio** library tab, re-synced within 3 minutes of a channel
+  going live or offline.
 - Search of currently live Twitch channels.
 - Fresh HLS resolution with Streamlink when playback starts.
 - Access and refresh tokens stay in Music Assistant setup data and are never logged or returned in

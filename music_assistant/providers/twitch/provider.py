@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Sequence
+from collections.abc import AsyncGenerator, Sequence
 from typing import TYPE_CHECKING, Any
 
 from music_assistant_models.enums import ContentType, ImageType, LinkType, MediaType, StreamType
@@ -24,7 +24,7 @@ from music_assistant_models.streamdetails import StreamDetails
 from music_assistant.models.music_provider import MusicProvider
 
 from .api import TwitchApiClient
-from .constants import BROWSE_FOLLOWED_LIVE, CONF_USER_ID, CONF_USER_LOGIN
+from .constants import BROWSE_FOLLOWED_LIVE, CONF_USER_ID, CONF_USER_LOGIN, LIVE_POLL_INTERVAL
 from .streaming import resolve_stream_url
 
 if TYPE_CHECKING:
@@ -33,6 +33,9 @@ if TYPE_CHECKING:
 
 class TwitchProvider(MusicProvider):
     """Browse and play live Twitch channels as radio streams."""
+
+    _live_watch_task: asyncio.Task[None] | None = None
+    _live_logins: frozenset[str] | None = None
 
     async def get_config_entries(self) -> tuple[ConfigEntry, ...]:
         """Return configurable options for an existing provider instance."""
@@ -47,6 +50,39 @@ class TwitchProvider(MusicProvider):
             raise ProviderUnavailableError(
                 "Twitch authentication belongs to a different account; reconfigure the provider"
             )
+
+    async def loaded_in_mass(self) -> None:
+        """Start watching which followed channels are live."""
+        self._live_watch_task = self.mass.create_task(self._watch_followed_live())
+
+    async def unload(self, is_removed: bool = False) -> None:
+        """Stop watching followed channels."""
+        if self._live_watch_task is not None:
+            self._live_watch_task.cancel()
+            self._live_watch_task = None
+        await super().unload(is_removed)
+
+    async def _watch_followed_live(self) -> None:
+        """Poll followed channels until the provider unloads."""
+        while True:
+            await self._check_followed_live()
+            await asyncio.sleep(LIVE_POLL_INTERVAL)
+
+    async def _check_followed_live(self) -> None:
+        """Sync this provider's radios when a followed channel goes live or offline."""
+        user_id = str(self.get_setup_value(CONF_USER_ID) or "")
+        try:
+            streams = await self.api.get_followed_streams(user_id)
+        except Exception as err:
+            self.logger.debug("Skipping Twitch live check: %s", err)
+            return
+        logins = frozenset(str(item["user_login"]).lower() for item in streams)
+        if logins == self._live_logins:
+            return
+        self._live_logins = logins
+        await self.mass.music.start_sync(
+            media_types=[MediaType.RADIO], providers=[self.instance_id]
+        )
 
     @property
     def is_streaming_provider(self) -> bool:
@@ -86,6 +122,15 @@ class TwitchProvider(MusicProvider):
             return []
         user_id = str(self.get_setup_value(CONF_USER_ID) or "")
         return [self._parse_stream(item) for item in await self.api.get_followed_streams(user_id)]
+
+    async def get_library_radios(self) -> AsyncGenerator[Radio]:
+        """Yield the followed channels that are live right now."""
+        user_id = str(self.get_setup_value(CONF_USER_ID) or "")
+        # Fetch every page before yielding so an API failure aborts the sync
+        # instead of being mistaken for all channels going offline.
+        streams = await self.api.get_followed_streams(user_id)
+        for item in streams:
+            yield self._parse_stream(item)
 
     async def search(
         self, search_query: str, media_types: list[MediaType], limit: int = 5

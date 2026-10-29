@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        MASS_VERSION: "2.10.7"
+        MASS_VERSION: "2.10.8"
     container_name: music-assistant-twitch-dev
     ports:
       - "8096:8095"

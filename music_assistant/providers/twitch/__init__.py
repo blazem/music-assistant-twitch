@@ -16,7 +16,11 @@ if TYPE_CHECKING:
     from music_assistant.models import ProviderInstanceType
 
 
-SUPPORTED_FEATURES = {ProviderFeature.BROWSE, ProviderFeature.SEARCH}
+SUPPORTED_FEATURES = {
+    ProviderFeature.BROWSE,
+    ProviderFeature.SEARCH,
+    ProviderFeature.LIBRARY_RADIOS,
+}
 
 
 async def setup(

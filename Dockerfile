@@ -1,4 +1,4 @@
-ARG MASS_VERSION=2.10.7
+ARG MASS_VERSION=2.10.8
 FROM ghcr.io/music-assistant/server:${MASS_VERSION}
 
 COPY music_assistant/providers/twitch /tmp/twitch-provider

@@ -16,3 +16,7 @@ TWITCH_VALIDATE_URL: Final = "https://id.twitch.tv/oauth2/validate"
 TWITCH_SCOPE: Final = "user:read:follows"
 
 BROWSE_FOLLOWED_LIVE: Final = "followed-live"
+
+# How often to check which followed channels are live, so the Radio library
+# tracks channels going live or offline without waiting for the full library sync.
+LIVE_POLL_INTERVAL: Final = 180
